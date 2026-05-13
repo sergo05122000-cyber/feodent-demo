@@ -323,6 +323,18 @@ p { margin: 0 0 12px; color: var(--ink-soft); }
   display: grid; place-items: center;
   border: 2px solid #fff;
 }
+/* Fix: HTML `hidden` is overridden by display:flex; force it explicitly. */
+[hidden] { display: none !important; }
+
+.chat-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 28, 30, 0.35);
+  z-index: 98;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
 .chat-window {
   position: fixed;
   bottom: 100px; right: 24px;
@@ -358,13 +370,16 @@ p { margin: 0 0 12px; color: var(--ink-soft); }
   background: rgba(255,255,255,0.18);
   border: none;
   color: #fff;
-  width: 30px; height: 30px;
+  width: 44px; height: 44px;
   border-radius: 50%;
-  font-size: 20px;
+  font-size: 28px;
   line-height: 1;
   display: grid; place-items: center;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
-.chat-close:hover { background: rgba(255,255,255,0.28); }
+.chat-close:hover, .chat-close:active { background: rgba(255,255,255,0.32); }
 .chat-messages {
   flex: 1;
   overflow-y: auto;

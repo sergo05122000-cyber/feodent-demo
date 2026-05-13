@@ -52,10 +52,27 @@
     }
   }
 
+  function ensureOverlay() {
+    let ov = document.getElementById('chatOverlay');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'chatOverlay';
+      ov.className = 'chat-overlay';
+      ov.addEventListener('click', closeChat);
+      document.body.appendChild(ov);
+    }
+    return ov;
+  }
+
   function openChat() {
     wrap.hidden = false;
+    wrap.style.display = 'flex';
+    const ov = ensureOverlay();
+    ov.hidden = false;
+    ov.style.display = 'block';
     isOpen = true;
     badge.hidden = true;
+    badge.style.display = 'none';
     setTimeout(() => input.focus(), 100);
 
     if (history.length === 0) {
@@ -66,6 +83,12 @@
 
   function closeChat() {
     wrap.hidden = true;
+    wrap.style.display = 'none';
+    const ov = document.getElementById('chatOverlay');
+    if (ov) {
+      ov.hidden = true;
+      ov.style.display = 'none';
+    }
     isOpen = false;
   }
 
@@ -131,8 +154,13 @@
   }
 
   // ====== Wire-up ======
-  bubble.addEventListener('click', openChat);
+  bubble.addEventListener('click', () => (isOpen ? closeChat() : openChat()));
   close.addEventListener('click', closeChat);
+
+  // Close on Escape (desktop)
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && isOpen) closeChat();
+  });
 
   document.querySelectorAll('[data-open-chat]').forEach(el => {
     el.addEventListener('click', e => { e.preventDefault(); openChat(); });
